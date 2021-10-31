@@ -8,21 +8,30 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/terrytay/product-api/handlers"
 )
 
 func main() {
 	l := log.New(os.Stdout, "product-api", log.LstdFlags)
 
-	ph := handlers.NewProducts(l)
+	r := chi.NewRouter()
 
-	sm := http.NewServeMux()
+	r.Route("/products", func(r chi.Router) {
+		ph := handlers.NewProducts(l)
 
-	sm.Handle("/", ph)
+		r.Get("/", ph.GetProducts) // GET /products
+
+		r.Route("/", func(r chi.Router) {
+			r.Use(ph.MiddlwareValidateProduct) // Validates body JSON format
+			r.Post("/", ph.AddProduct)         // POST /products
+			r.Put("/{id}", ph.UpdateProducts)  // PUT /products/:id
+		})
+	})
 
 	s := &http.Server{
 		Addr:         ":9090",
-		Handler:      sm,
+		Handler:      r,
 		IdleTimeout:  120 * time.Second,
 		ReadTimeout:  1 * time.Second,
 		WriteTimeout: 1 * time.Second,
@@ -35,13 +44,13 @@ func main() {
 		}
 	}()
 
-	sigChan := make(chan os.Signal)
+	sigChan := make(chan os.Signal, 10)
 	signal.Notify(sigChan, os.Interrupt)
-	signal.Notify(sigChan, os.Kill)
 
 	sig := <-sigChan
 	l.Println("Received terminate, graceful shutdown", sig)
 
-	tc, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	tc, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
 	s.Shutdown(tc)
 }

@@ -1,12 +1,13 @@
 package handlers
 
 import (
+	"context"
 	"errors"
 	"log"
 	"net/http"
-	"regexp"
 	"strconv"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/terrytay/product-api/data"
 )
 
@@ -18,43 +19,10 @@ func NewProducts(l *log.Logger) *Products {
 	return &Products{l}
 }
 
-func (p *Products) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		p.getProducts(w, r)
-		return
-	}
+// GetProducts return the list of products
+func (p *Products) GetProducts(w http.ResponseWriter, r *http.Request) {
+	p.l.Println("Handle GET Products")
 
-	if r.Method == http.MethodPost {
-		p.addProduct(w, r)
-		return
-	}
-
-	if r.Method == http.MethodPut {
-		reg := regexp.MustCompile(`/([0-9]+)`)
-		g := reg.FindAllStringSubmatch(r.URL.Path, -1)
-		if len(g) != 1 {
-			http.Error(w, "Invalid URL", http.StatusBadRequest)
-			return
-		}
-		if len(g[0]) != 2 {
-			http.Error(w, "Invalid URL", http.StatusBadRequest)
-			return
-		}
-		idString := g[0][1]
-		id, err := strconv.Atoi(idString)
-		if err != nil {
-			http.Error(w, "Invalid URL", http.StatusBadRequest)
-			return
-		}
-		p.updateProducts(id, w, r)
-		return
-	}
-
-	// catch all
-	w.WriteHeader(http.StatusMethodNotAllowed)
-}
-
-func (p *Products) getProducts(w http.ResponseWriter, r *http.Request) {
 	lp := data.GetProducts()
 	err := lp.ToJSON(w)
 	if err != nil {
@@ -63,34 +31,32 @@ func (p *Products) getProducts(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (p *Products) addProduct(w http.ResponseWriter, r *http.Request) {
-	p.l.Println("Handle POST  Product")
+// AddProduct takes a product and append it to products list
+func (p *Products) AddProduct(w http.ResponseWriter, r *http.Request) {
+	p.l.Println("Handle POST Product")
 
-	prod := &data.Product{}
+	prod := r.Context().Value(KeyProduct{}).(data.Product)
 
-	err := prod.FromJSON(r.Body)
-	if err != nil {
-		http.Error(w, "unable to unmarshal json", http.StatusBadRequest)
-		return
-	}
-
-	data.AddProduct(prod)
+	data.AddProduct(&prod)
 }
 
-func (p *Products) updateProducts(id int, w http.ResponseWriter, r *http.Request) {
+// UpdateProducts takes a product and update the products list
+func (p *Products) UpdateProducts(w http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handle PUT Product")
 
-	prod := &data.Product{}
+	prod := r.Context().Value(KeyProduct{}).(data.Product)
 
-	err := prod.FromJSON(r.Body)
+	// Obtain id (string) from URL param and convert to id (int)
+	idString := chi.URLParam(r, "id")
+	id, err := strconv.Atoi(idString)
 	if err != nil {
-		http.Error(w, "unable to unmarshal json", http.StatusBadRequest)
+		http.Error(w, "unable to convert id", http.StatusBadRequest)
 		return
 	}
 
-	err = data.UpdateProduct(id, prod)
+	// Update product
+	err = data.UpdateProduct(id, &prod)
 	if errors.Is(err, data.ErrProductNotFound) {
-		p.l.Println(err)
 		http.Error(w, "product not found", http.StatusNotFound)
 		return
 	}
@@ -98,4 +64,25 @@ func (p *Products) updateProducts(id int, w http.ResponseWriter, r *http.Request
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
+}
+
+type KeyProduct struct{}
+
+// MiddlwwareValidateProduct is middlware that validates the request body object
+// with struct from data.Product{}
+// Propogates in context upon successful validation with key KeyProduct{}
+func (p *Products) MiddlwareValidateProduct(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		prod := data.Product{}
+
+		err := prod.FromJSON(r.Body)
+		if err != nil {
+			p.l.Println("[ERROR] deserializing product", err)
+			http.Error(w, "Error reading product", http.StatusBadRequest)
+			return
+		}
+
+		ctx := context.WithValue(r.Context(), KeyProduct{}, prod)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
 }
