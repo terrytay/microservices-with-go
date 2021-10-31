@@ -1,3 +1,3 @@
-module github.com/terrytay/working
+module github.com/terrytay/product-api
 
 go 1.17
