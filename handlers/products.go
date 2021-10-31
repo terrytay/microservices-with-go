@@ -90,7 +90,7 @@ func (p *Products) updateProducts(id int, w http.ResponseWriter, r *http.Request
 
 	err = data.UpdateProduct(id, prod)
 	if errors.Is(err, data.ErrProductNotFound) {
-		p.l.Println("product not found")
+		p.l.Println(err)
 		http.Error(w, "product not found", http.StatusNotFound)
 		return
 	}
