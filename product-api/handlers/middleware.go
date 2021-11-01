@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/terrytay/product-api/data"
-	"github.com/terrytay/product-api/utils"
+	"github.com/terrytay/microservices-with-go/product-api/data"
+	"github.com/terrytay/microservices-with-go/product-api/utils"
 )
 
 // MiddlwwareValidateProduct is middlware that validates the request body object

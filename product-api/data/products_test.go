@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/terrytay/product-api/utils"
+	"github.com/terrytay/microservices-with-go/product-api/utils"
 )
 
 func TestProductMissingNameReturnsErr(t *testing.T) {

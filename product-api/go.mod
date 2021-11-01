@@ -1,4 +1,4 @@
-module github.com/terrytay/product-api
+module github.com/terrytay/microservices-with-go/product-api
 
 go 1.17
 

@@ -1,6 +1,6 @@
 package handlers
 
-import "github.com/terrytay/product-api/data"
+import "github.com/terrytay/microservices-with-go/product-api/data"
 
 // NOTE: Types defined here are purely for documentation purposes
 // these types are not used by any of the handers

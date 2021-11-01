@@ -10,8 +10,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/terrytay/product-api/data"
-	"github.com/terrytay/product-api/handlers"
+	"github.com/terrytay/microservices-with-go/product-api/data"
+	"github.com/terrytay/microservices-with-go/product-api/handlers"
 )
 
 func main() {

@@ -20,7 +20,7 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/terrytay/product-api/data"
+	"github.com/terrytay/microservices-with-go/product-api/data"
 )
 
 type Products struct {
