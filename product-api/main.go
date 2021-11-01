@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/terrytay/microservices-with-go/product-api/data"
 	"github.com/terrytay/microservices-with-go/product-api/handlers"
@@ -18,14 +19,27 @@ func main() {
 	l := log.New(os.Stdout, "product-api", log.LstdFlags)
 	v := data.NewValidation()
 
+	cors := cors.New(cors.Options{
+		AllowedOrigins: []string{"http://localhost:2000"}, // Use this to allow specific origin hosts
+		// AllowedOrigins: []string{"https://*", "http://*"},
+		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
+		AllowedMethods:   []string{"POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Content-Type"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: false,
+		MaxAge:           300, // Maximum value not ignored by any of major browsers
+	})
+
 	r := chi.NewRouter()
+	r.Use(cors.Handler)
 
 	r.Route("/products", func(r chi.Router) {
+
 		ph := handlers.NewProducts(l, v)
 
 		r.Get("/", ph.GetProducts)                 // GET /products
 		r.Get("/{id:[0-9]+}", ph.GetProduct)       // GET /product
-		r.Delete("/{id:[0-9]+}", ph.DeleteProduct) // DELTE /products/:id
+		r.Delete("/{id:[0-9]+}", ph.DeleteProduct) // DELETE /products/:id
 
 		r.Route("/", func(r chi.Router) {
 			r.Use(ph.MiddlwareValidateProduct) // Validates body JSON format

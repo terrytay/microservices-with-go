@@ -19,6 +19,7 @@ require (
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/go-chi/cors v1.2.0
 	github.com/go-openapi/analysis v0.21.1 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/jsonreference v0.19.6 // indirect
