@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-openapi/runtime/middleware"
 	handlers "github.com/terrytay/product-api/handlers/products"
 )
 
@@ -30,12 +31,19 @@ func main() {
 		})
 	})
 
+	opts := middleware.RedocOpts{SpecURL: "/swagger.yaml"}
+	sh := middleware.Redoc(opts, nil)
+
+	r.Handle("/docs", sh)
+	r.Handle("/swagger.yaml", http.FileServer(http.Dir("./"))) // Serving file request
+
 	s := &http.Server{
-		Addr:         ":9090",
-		Handler:      r,
-		IdleTimeout:  120 * time.Second,
-		ReadTimeout:  1 * time.Second,
-		WriteTimeout: 1 * time.Second,
+		Addr:         ":9090",           // configure the bind address
+		Handler:      r,                 // set the default handler
+		ErrorLog:     l,                 // set the logger for the server
+		IdleTimeout:  120 * time.Second, // max time for connections using TCP keep-alive
+		ReadTimeout:  1 * time.Second,   // max time to read request from the client
+		WriteTimeout: 1 * time.Second,   // max time to write response to the client
 	}
 
 	go func() {

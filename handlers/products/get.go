@@ -6,6 +6,11 @@ import (
 	"github.com/terrytay/product-api/data"
 )
 
+//	swagger:route GET /products products getProducts
+//	Returns a list of products
+//	responses:
+//		200: productsResponse
+
 // GetProducts return the list of products
 func (p *Products) GetProducts(w http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handle GET Products")

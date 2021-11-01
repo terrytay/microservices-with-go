@@ -9,7 +9,12 @@ import (
 	"github.com/terrytay/product-api/data"
 )
 
-// DeleteProduct deletes a product from the products list
+//	swagger:route DELETE /products/{id} products deleteProduct
+//	Deletes a product by its ID
+//	responses:
+//		201: noContent
+
+// DeleteProduct deletes a product from the database
 func (p *Products) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handle DELETE Product")
 
