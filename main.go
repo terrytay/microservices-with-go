@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/terrytay/product-api/handlers"
+	handlers "github.com/terrytay/product-api/handlers/products"
 )
 
 func main() {
@@ -20,7 +20,8 @@ func main() {
 	r.Route("/products", func(r chi.Router) {
 		ph := handlers.NewProducts(l)
 
-		r.Get("/", ph.GetProducts) // GET /products
+		r.Get("/", ph.GetProducts)          // GET /products
+		r.Delete("/{id}", ph.DeleteProduct) // DELTE /products/:id
 
 		r.Route("/", func(r chi.Router) {
 			r.Use(ph.MiddlwareValidateProduct) // Validates body JSON format
