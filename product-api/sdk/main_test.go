@@ -3,9 +3,9 @@ package main
 import (
 	"testing"
 
-	"github.com/terrytay/microservices-with-go/product-api/sdk/client/client"
-	"github.com/terrytay/microservices-with-go/product-api/sdk/client/client/products"
-	"github.com/terrytay/microservices-with-go/product-api/sdk/client/models"
+	"github.com/terrytay/microservices-with-go/product-api/sdk/client"
+	"github.com/terrytay/microservices-with-go/product-api/sdk/client/products"
+	"github.com/terrytay/microservices-with-go/product-api/sdk/models"
 )
 
 func TestOurClientListProducts(t *testing.T) {
