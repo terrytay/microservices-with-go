@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/cors"
 	"github.com/go-openapi/runtime/middleware"
+	gohandlers "github.com/gorilla/handlers"
 	"github.com/terrytay/microservices-with-go/product-api/data"
 	"github.com/terrytay/microservices-with-go/product-api/handlers"
 )
@@ -19,19 +19,8 @@ func main() {
 	l := log.New(os.Stdout, "product-api", log.LstdFlags)
 	v := data.NewValidation()
 
-	cors := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:2000"}, // Use this to allow specific origin hosts
-		// AllowedOrigins: []string{"https://*", "http://*"},
-		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
-		AllowedMethods:   []string{"POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"Accept", "Content-Type"},
-		ExposedHeaders:   []string{"Link"},
-		AllowCredentials: false,
-		MaxAge:           300, // Maximum value not ignored by any of major browsers
-	})
-
+	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"http://localhost:3000"}))
 	r := chi.NewRouter()
-	r.Use(cors.Handler)
 
 	r.Route("/products", func(r chi.Router) {
 
@@ -56,7 +45,7 @@ func main() {
 
 	s := &http.Server{
 		Addr:         ":9090",           // configure the bind address
-		Handler:      r,                 // set the default handler
+		Handler:      ch(r),             // set the default handler
 		ErrorLog:     l,                 // set the logger for the server
 		IdleTimeout:  120 * time.Second, // max time for connections using TCP keep-alive
 		ReadTimeout:  1 * time.Second,   // max time to read request from the client
