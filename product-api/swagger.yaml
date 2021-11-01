@@ -3,15 +3,17 @@ consumes:
   - application/json
 definitions:
   GenericError:
-    description: GenericError is a generic error message returned by a server
+    description: GenericError GenericError GenericError is a generic error message
+      returned by a server
     properties:
       message:
+        description: message
         type: string
         x-go-name: Message
     type: object
-    x-go-package: github.com/terrytay/microservices-with-go/product-api/handlers
+    x-go-package: github.com/terrytay/microservices-with-go/product-api/sdk/client/models
   Product:
-    description: Product defines the structure for an API product
+    description: Product Product Product defines the structure for an API product
     properties:
       description:
         description: the description for this product
@@ -45,20 +47,23 @@ definitions:
       - price
       - sku
     type: object
-    x-go-package: github.com/terrytay/microservices-with-go/product-api/data
+    x-go-package: github.com/terrytay/microservices-with-go/product-api/models
   ValidationError:
-    description: ValidationError is a collection of validation error messages
+    description: ValidationError ValidationError ValidationError is a collection of
+      validation error messages
     properties:
       messages:
+        description: messages
         items:
           type: string
         type: array
         x-go-name: Messages
     type: object
-    x-go-package: github.com/terrytay/microservices-with-go/product-api/handlers
+    x-go-package: github.com/terrytay/microservices-with-go/product-api/models
 info:
   description: Documentation for Product API
   version: 1.0.0
+  title: Documentation for Product API
 paths:
   /products:
     get:
@@ -102,15 +107,8 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/Product"
-        - description: The id of the product for which the operation relates
-          format: int64
-          in: path
-          name: id
-          required: true
-          type: integer
-          x-go-name: ID
       responses:
-        "201":
+        "204":
           $ref: "#/responses/noContentResponse"
         "404":
           $ref: "#/responses/errorResponse"
@@ -122,18 +120,34 @@ paths:
     delete:
       description: Update a products details
       operationId: deleteProduct
+      parameters:
+        - description: The id of the product for which the operation relates
+          format: int64
+          in: path
+          name: id
+          required: true
+          type: integer
+          x-go-name: ID
       responses:
-        "201":
+        "204":
           $ref: "#/responses/noContentResponse"
         "404":
           $ref: "#/responses/errorResponse"
-        "501":
+        "500":
           $ref: "#/responses/errorResponse"
       tags:
         - products
     get:
       description: Return a list of products from the database
-      operationId: listSingle
+      operationId: listSingleProduct
+      parameters:
+        - description: The id of the product for which the operation relates
+          format: int64
+          in: path
+          name: id
+          required: true
+          type: integer
+          x-go-name: ID
       responses:
         "200":
           $ref: "#/responses/productResponse"
@@ -152,7 +166,7 @@ responses:
     description: Validation errors defined as an array of strings
     schema:
       $ref: "#/definitions/ValidationError"
-  noContent:
+  noContentResponse:
     description: ""
   productResponse:
     description: Data structure representing a single product

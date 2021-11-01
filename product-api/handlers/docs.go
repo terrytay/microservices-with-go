@@ -1,3 +1,17 @@
+// Package classfication of Product API
+
+// Documentation for Product API
+//
+// 	Schemes: http
+// 	BasePath: /
+//	Version: 1.0.0
+//
+// 	Consumes:
+// 	- application/json
+//
+// 	Produces:
+// 	- application/json
+// swagger:meta
 package handlers
 
 import "github.com/terrytay/microservices-with-go/product-api/data"
@@ -37,7 +51,7 @@ type productResponseWrapper struct {
 	Body data.Product
 }
 
-//swagger:response noContent
+//swagger:response noContentResponse
 type productsNoContentResponseWrapper struct {
 }
 
@@ -50,7 +64,7 @@ type productParamsWrapper struct {
 	Body data.Product
 }
 
-// swagger:parameters updateProduct
+// swagger:parameters deleteProduct listSingleProduct
 type productIDParamsWrapper struct {
 	// The id of the product for which the operation relates
 	// in: path

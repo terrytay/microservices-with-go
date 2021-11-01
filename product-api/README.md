@@ -7,3 +7,11 @@ Then run the command:
 ```bash
 make swagger
 ```
+
+Each time swagger.yaml is configured, please manually go into info and add title.
+
+To regenerate the swagger HTTP client, run the following command in the dir `sdk/client`
+
+```bash
+swagger generate client -f ../../swagger.yaml -A product-api
+```

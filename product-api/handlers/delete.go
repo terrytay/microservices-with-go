@@ -11,15 +11,16 @@ import (
 // swagger:route DELETE /products/{id} products deleteProduct
 // Update a products details
 // responses:
-//	201: noContentResponse
+//	204: noContentResponse
 //  404: errorResponse
-//  501: errorResponse
+//  500: errorResponse
 
 // DeleteProduct deletes a product from the database
 func (p *Products) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	id := getProductID(r)
 
 	p.l.Println("[DEBUG] deleting record id", id)
+	w.Header().Add("Content-Type", "application/json")
 
 	// Update product
 	err := data.DeleteProduct(id)
