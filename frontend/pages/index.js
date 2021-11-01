@@ -40,62 +40,65 @@ export default function Home({ products }) {
         <title>Coffee Products</title>
       </Head>
       <Nav prods={prods} setProds={setProds} original={products} />
-      <div className="my-10 w-3/4 text-center h-full">
-        <h1 className="text-5xl mb-6">Menu</h1>
-        <table {...getTableProps()} className="w-full flex flex-col rounded-lg">
-          <thead className="border-b border-gray-200 flex justify-between w-full rounded-lg">
-            {
-              // Loop over the header rows
-              headerGroups.map((headerGroup) => (
-                // Apply the header row props
-                <tr className="flex w-full bg-gray-100 rounded-lg" {...headerGroup.getHeaderGroupProps()}>
-                  {
-                    // Loop over the headers in each row
-                    headerGroup.headers.map((column) => (
-                      // Apply the header cell props
-                      <th className="flex justify-evenly w-full" {...column.getHeaderProps()}>
-                        {
-                          // Render the header
-                          column.render("Header")
-                        }
-                      </th>
-                    ))
-                  }
-                </tr>
-              ))
-            }
-          </thead>
-          {/* Apply the table body props */}
-          <tbody className="flex flex-col w-fullrounded-lg" {...getTableBodyProps()}>
-            {
-              // Loop over the table rows
-              rows.map((row) => {
-                // Prepare the row for display
-                prepareRow(row);
-                return (
-                  // Apply the row props
-                  <tr className="flex bg-gray-50 w-full rounded-lg py-2" {...row.getRowProps()}>
+      {products.length == 0 && <div>Please start up the golang server.</div>}
+      {products.length > 0 && (
+        <div className="my-10 w-3/4 text-center h-full">
+          <h1 className="text-5xl mb-6">Menu</h1>
+          <table {...getTableProps()} className="w-full flex flex-col rounded-lg">
+            <thead className="border-b border-gray-200 flex justify-between w-full rounded-lg">
+              {
+                // Loop over the header rows
+                headerGroups.map((headerGroup) => (
+                  // Apply the header row props
+                  <tr className="flex w-full bg-gray-100 rounded-lg" {...headerGroup.getHeaderGroupProps()}>
                     {
-                      // Loop over the rows cells
-                      row.cells.map((cell) => {
-                        // Apply the cell props
-                        return (
-                          <td className="flex justify-evenly w-full" {...cell.getCellProps()}>
-                            {
-                              // Render the cell contents
-                              cell.render("Cell")
-                            }
-                          </td>
-                        );
-                      })
+                      // Loop over the headers in each row
+                      headerGroup.headers.map((column) => (
+                        // Apply the header cell props
+                        <th className="flex justify-evenly w-full" {...column.getHeaderProps()}>
+                          {
+                            // Render the header
+                            column.render("Header")
+                          }
+                        </th>
+                      ))
                     }
                   </tr>
-                );
-              })
-            }
-          </tbody>
-        </table>
-      </div>
+                ))
+              }
+            </thead>
+            {/* Apply the table body props */}
+            <tbody className="flex flex-col w-fullrounded-lg" {...getTableBodyProps()}>
+              {
+                // Loop over the table rows
+                rows.map((row) => {
+                  // Prepare the row for display
+                  prepareRow(row);
+                  return (
+                    // Apply the row props
+                    <tr className="flex bg-gray-50 w-full rounded-lg py-2" {...row.getRowProps()}>
+                      {
+                        // Loop over the rows cells
+                        row.cells.map((cell) => {
+                          // Apply the cell props
+                          return (
+                            <td className="flex justify-evenly w-full" {...cell.getCellProps()}>
+                              {
+                                // Render the cell contents
+                                cell.render("Cell")
+                              }
+                            </td>
+                          );
+                        })
+                      }
+                    </tr>
+                  );
+                })
+              }
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
@@ -118,9 +121,10 @@ export const getServerSideProps = async ({ params, res }) => {
       },
     };
   } catch {
-    res.statusCode = 404;
     return {
-      props: {},
+      props: {
+        products: [],
+      },
     };
   }
 };

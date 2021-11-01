@@ -125,4 +125,22 @@ var productList = []*Product{
 		CreatedOn:   time.Now().UTC().String(),
 		UpdatedOn:   time.Now().UTC().String(),
 	},
+	{
+		ID:          3,
+		Name:        "Milo",
+		Description: "Sweet Singapore drink",
+		Price:       4.99,
+		SKU:         "rty-ggdg-rrr",
+		CreatedOn:   time.Now().UTC().String(),
+		UpdatedOn:   time.Now().UTC().String(),
+	},
+	{
+		ID:          4,
+		Name:        "Ice Lemon Tea",
+		Description: "Tea with lemon and sugar",
+		Price:       1.50,
+		SKU:         "abctgbb-def-qwe",
+		CreatedOn:   time.Now().UTC().String(),
+		UpdatedOn:   time.Now().UTC().String(),
+	},
 }
