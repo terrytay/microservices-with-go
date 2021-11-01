@@ -10,24 +10,27 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-openapi/runtime/middleware"
-	handlers "github.com/terrytay/product-api/handlers/products"
+	"github.com/terrytay/product-api/data"
+	"github.com/terrytay/product-api/handlers"
 )
 
 func main() {
 	l := log.New(os.Stdout, "product-api", log.LstdFlags)
+	v := data.NewValidation()
 
 	r := chi.NewRouter()
 
 	r.Route("/products", func(r chi.Router) {
-		ph := handlers.NewProducts(l)
+		ph := handlers.NewProducts(l, v)
 
-		r.Get("/", ph.GetProducts)          // GET /products
-		r.Delete("/{id}", ph.DeleteProduct) // DELTE /products/:id
+		r.Get("/", ph.GetProducts)                 // GET /products
+		r.Get("/{id:[0-9]+}", ph.GetProduct)       // GET /product
+		r.Delete("/{id:[0-9]+}", ph.DeleteProduct) // DELTE /products/:id
 
 		r.Route("/", func(r chi.Router) {
 			r.Use(ph.MiddlwareValidateProduct) // Validates body JSON format
 			r.Post("/", ph.AddProduct)         // POST /products
-			r.Put("/{id}", ph.UpdateProducts)  // PUT /products/:id
+			r.Put("/", ph.UpdateProducts)      // PUT /products
 		})
 	})
 
