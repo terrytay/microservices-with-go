@@ -9,8 +9,8 @@ import (
 )
 
 type Local struct {
-	maxFileSize int // max bytes for files
-	basePath    string
+	// maxFileSize int // max bytes for files
+	basePath string
 }
 
 // NewLocal creates the basePath by getting the absolute path and store in Local struct
