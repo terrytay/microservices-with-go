@@ -13,8 +13,6 @@ import (
 // Propogates in context upon successful validation with key KeyProduct{}
 func (p *Products) MiddlwareValidateProduct(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Content-Type", "application/json")
-
 		prod := &data.Product{}
 
 		err := utils.FromJSON(prod, r.Body)

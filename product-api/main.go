@@ -10,7 +10,6 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-openapi/runtime/middleware"
-	gohandlers "github.com/gorilla/handlers"
 	"github.com/terrytay/microservices-with-go/product-api/data"
 	"github.com/terrytay/microservices-with-go/product-api/handlers"
 )
@@ -19,8 +18,9 @@ func main() {
 	l := log.New(os.Stdout, "product-api", log.LstdFlags)
 	v := data.NewValidation()
 
-	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"http://localhost:3000"}))
 	r := chi.NewRouter()
+
+	r.Use(MiddlwareValidateCors)
 
 	r.Route("/products", func(r chi.Router) {
 
@@ -45,7 +45,7 @@ func main() {
 
 	s := &http.Server{
 		Addr:         ":9090",           // configure the bind address
-		Handler:      ch(r),             // set the default handler
+		Handler:      r,                 // set the default handler
 		ErrorLog:     l,                 // set the logger for the server
 		IdleTimeout:  120 * time.Second, // max time for connections using TCP keep-alive
 		ReadTimeout:  1 * time.Second,   // max time to read request from the client
@@ -67,5 +67,23 @@ func main() {
 
 	tc, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
+
 	s.Shutdown(tc)
+}
+
+func MiddlwareValidateCors(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept, Accept-Language, Content-Type")
+
+		w.Header().Set("Content-Type", "application/json")
+
+		// Stop here if its Preflighted OPTIONS request
+		if r.Method == "OPTIONS" {
+			return
+		}
+		next.ServeHTTP(w, r)
+
+	})
 }

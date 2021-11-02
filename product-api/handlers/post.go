@@ -19,6 +19,5 @@ func (p *Products) AddProduct(w http.ResponseWriter, r *http.Request) {
 	prod := r.Context().Value(KeyProduct{}).(*data.Product)
 
 	p.l.Printf("[DEBUG] Inserting product: %#v\n", prod)
-	w.Header().Add("Content-Type", "application/json")
 	data.AddProduct(prod)
 }

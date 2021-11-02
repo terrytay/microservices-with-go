@@ -19,7 +19,6 @@ import (
 func (p *Products) UpdateProducts(w http.ResponseWriter, r *http.Request) {
 	prod := r.Context().Value(KeyProduct{}).(*data.Product)
 	p.l.Println("[DEBUG] updating record id", prod.ID)
-	w.Header().Add("Content-Type", "application/json")
 
 	err := data.UpdateProduct(prod)
 	if errors.Is(err, data.ErrProductNotFound) {

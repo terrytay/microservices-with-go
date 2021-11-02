@@ -20,7 +20,6 @@ func (p *Products) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	id := getProductID(r)
 
 	p.l.Println("[DEBUG] deleting record id", id)
-	w.Header().Add("Content-Type", "application/json")
 
 	// Update product
 	err := data.DeleteProduct(id)

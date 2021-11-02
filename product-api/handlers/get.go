@@ -34,7 +34,6 @@ func (p *Products) GetProducts(w http.ResponseWriter, r *http.Request) {
 func (p *Products) GetProduct(w http.ResponseWriter, r *http.Request) {
 	id := getProductID(r)
 	p.l.Println("[DEBUG] get record id", id)
-	w.Header().Add("Content-Type", "application/json")
 
 	prod, err := data.GetProductByID(id)
 
