@@ -46,12 +46,14 @@ func main() {
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
 
-	r.Post("/images/{id:[0-9]+}/{filename:[a-zA-Z]+\\.[a-z]{3}}", fh.ServeHTTP)
+	r.Post("/", fh.UploadMultipart)
+
+	r.Post("/images/{id:[0-9]+}/{filename:[a-zA-Z]+\\.[a-z]{3}}", fh.UploadREST)
 
 	r.Method(http.MethodGet, "/images/{id:[0-9]+}/{filename:[a-zA-Z]+\\.[a-z]{3}}", http.StripPrefix("/images/", http.FileServer(http.Dir(basePath))))
 
 	server := &http.Server{
-		Addr:         ":9090",           // configure the bind address
+		Addr:         ":9091",           // configure the bind address
 		Handler:      r,                 // set the default handler
 		ErrorLog:     l,                 // set the logger for the server
 		IdleTimeout:  120 * time.Second, // max time for connections using TCP keep-alive
