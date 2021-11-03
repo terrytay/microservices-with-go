@@ -45,7 +45,7 @@ func main() {
 
 	// Route for products
 	r.Route("/products", func(r chi.Router) {
-		ph := handlers.NewProducts(l, v)
+		ph := handlers.NewProducts(l, v, chi.URLParam)
 
 		r.Get("/", ph.GetProducts)                 // GET /products
 		r.Get("/{id:[0-9]+}", ph.GetProduct)       // GET /product

@@ -5,17 +5,17 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/terrytay/microservices-with-go/product-api/data"
 )
 
 type Products struct {
-	l *log.Logger
-	v *data.Validation
+	l        *log.Logger
+	v        *data.Validation
+	urlParam func(r *http.Request, key string) string
 }
 
-func NewProducts(l *log.Logger, v *data.Validation) *Products {
-	return &Products{l, v}
+func NewProducts(l *log.Logger, v *data.Validation, u func(r *http.Request, key string) string) *Products {
+	return &Products{l, v, u}
 }
 
 type KeyProduct struct{}
@@ -34,9 +34,9 @@ type ValidationError struct {
 // Panics if cannot convert the id into an integer
 // this should never happen as the router ensures that
 // this is a valid number
-func getProductID(r *http.Request) int {
+func (p Products) getProductID(r *http.Request) int {
 	// parse the product id from the url
-	idString := chi.URLParam(r, "id")
+	idString := p.urlParam(r, "id")
 
 	// convert the id into an integer and return
 	id, err := strconv.Atoi(idString)

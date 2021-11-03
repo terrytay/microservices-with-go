@@ -31,7 +31,7 @@ func (p *Products) GetProducts(w http.ResponseWriter, r *http.Request) {
 
 // GetProduct return the product by ID
 func (p *Products) GetProduct(w http.ResponseWriter, r *http.Request) {
-	id := getProductID(r)
+	id := p.getProductID(r)
 	p.l.Println("[DEBUG] get record id", id)
 
 	prod, err := data.GetProductByID(id)

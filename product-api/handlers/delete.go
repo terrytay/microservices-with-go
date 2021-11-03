@@ -17,7 +17,7 @@ import (
 
 // DeleteProduct deletes a product from the database
 func (p *Products) DeleteProduct(w http.ResponseWriter, r *http.Request) {
-	id := getProductID(r)
+	id := p.getProductID(r)
 
 	p.l.Println("[DEBUG] deleting record id", id)
 
