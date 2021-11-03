@@ -30,7 +30,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	fh := handlers.NewFiles(l, s)
+	fh := handlers.NewFiles(l, s, chi.URLParam)
 
 	r := chi.NewRouter()
 

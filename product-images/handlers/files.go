@@ -5,22 +5,23 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/terrytay/microservices-with-go/product-images/files"
 )
 
 type Files struct {
-	log   *log.Logger
-	store files.Storage
+	log      *log.Logger
+	store    files.Storage
+	urlParam func(r *http.Request, key string) string
 }
 
-func NewFiles(l *log.Logger, s files.Storage) *Files {
-	return &Files{log: l, store: s}
+// NewFiles takes in a logger, a storage and a URLparams function
+func NewFiles(l *log.Logger, s files.Storage, m func(r *http.Request, key string) string) *Files {
+	return &Files{log: l, store: s, urlParam: m}
 }
 
 func (f *Files) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
-	fn := chi.URLParam(r, "filename")
+	id := f.urlParam(r, "id")
+	fn := f.urlParam(r, "filename")
 
 	f.log.Println("[DEBUG] Handle POST", "id", id, "filename", fn)
 
